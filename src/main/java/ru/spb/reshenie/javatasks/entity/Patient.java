@@ -6,21 +6,13 @@ public class Patient {
     private Integer id;
     private String fio;
     private LocalDate birthDate;
-    private Integer sex;
+    private String sex;
     private Integer num;
     private String smo;
     private String snils;
     private String policy;
     private Integer finSource;
     private Integer age;
-
-    public Integer getFinSource() {
-        return finSource;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
 
     public Integer getId() {
         return id;
@@ -34,7 +26,7 @@ public class Patient {
         return birthDate;
     }
 
-    public Integer getSex() {
+    public String getSex() {
         return sex;
     }
 
@@ -54,8 +46,12 @@ public class Patient {
         return policy;
     }
 
-    public Integer getFin_source() {
+    public Integer getFinSource() {
         return finSource;
+    }
+
+    public Integer getAge() {
+        return age;
     }
 
     public Patient() {
@@ -72,7 +68,7 @@ public class Patient {
         this.id = id;
         this.fio = fio;
         this.birthDate = birthDate;
-        this.sex = sex;
+        this.sex = (sex == 1) ? "МУЖ" : "ЖЕН";
         this.num = num;
         this.smo = smo;
         this.snils = snils;

@@ -1,21 +1,13 @@
 package ru.spb.reshenie.javatasks.ui;
 
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
 import ru.spb.reshenie.javatasks.entity.Patient;
 import ru.spb.reshenie.javatasks.utils.CustomCellFactory;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class TableView_Patient extends TableView<Patient> {
     public TableView_Patient(ObservableList<Patient> ol) throws ClassNotFoundException {
@@ -25,15 +17,13 @@ public class TableView_Patient extends TableView<Patient> {
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
-    private LinkedList<TableColumn<Patient, Object>> getColumns(ObservableList<Patient> ol)
+    private List<TableColumn<Patient, Object>> getColumns(ObservableList<Patient> ol)
             throws ClassNotFoundException {
-        Field[] fields = Class.forName(ol.get(0).getClass().getName()).getDeclaredFields();
-        LinkedList<TableColumn<Patient, Object>> tCols = new LinkedList<>();
         Map<String, String> columnNames = columnNames();
-        for (Field field : fields) {
-            tCols.add(getColumnFromField(field.getName(), columnNames.get(field.getName())));
-        }
-        return tCols;
+        return Arrays.
+                stream(Class.forName(ol.get(0).getClass().getName()).getDeclaredFields())
+                .map(e -> getColumnFromField(e.getName(), columnNames.get(e.getName())))
+                .toList();
     }
 
     private TableColumn<Patient, Object> getColumnFromField(String prop, String colName) {

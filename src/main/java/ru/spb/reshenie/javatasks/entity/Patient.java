@@ -1,14 +1,18 @@
 package ru.spb.reshenie.javatasks.entity;
 
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Date;
+
+import static ru.spb.reshenie.javatasks.utils.PatientAdapter.*;
 
 public class Patient {
     private Integer num;
     private String snils;
     private String sex;
     private String fio;
-    private LocalDate birthDate;
-    private Integer age;
+    private String birthDate;
+    private String age;
     private String policy;
     private Integer finSource;
 
@@ -17,7 +21,7 @@ public class Patient {
         return fio;
     }
 
-    public LocalDate getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
@@ -41,24 +45,23 @@ public class Patient {
         return finSource;
     }
 
-    public Integer getAge() {
+    public String getAge() {
         return age;
     }
 
     public Patient() {
     }
 
-    public Patient(Integer id, String fio, LocalDate birthDate, Integer sex,
+    public Patient(String fio, LocalDate birthDate, Integer sex,
                    Integer num, String smo, String snils, String policy, Integer finSource) {
-//        this.id = id;
         this.fio = fio;
-        this.birthDate = birthDate;
-        this.sex = (sex  == 1) ? "МУЖ" : "ЖЕН";
+        this.birthDate = getDateFromSQLFormat(birthDate);
+        this.sex = getSexStr(sex);
         this.num = num;
-        this.snils = snils;
-        this.policy = policy;
+        this.snils = getSnilsStr(snils);
+        this.policy = getPolicyStr(smo, policy);
         this.finSource = finSource;
-        this.age = LocalDate.now().compareTo(birthDate);
+        this.age = getAgeStr(birthDate);
     }
 
     @Override

@@ -40,25 +40,29 @@ public class TableView_Patient extends TableView<Patient> {
         column.setCellValueFactory(new PropertyValueFactory<>(prop));
         column.setCellFactory(new Callback<>() {
             @Override
-            public TableCell<Patient, Object> call(TableColumn<Patient, Object> soCalledFriendStringTableColumn) {
+            public TableCell<Patient, Object> call(TableColumn<Patient, Object> col) {
                 return new TableCell<>() {
                     @Override
-                    public void updateItem(Object item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            setText(item.toString());
-                            if (item.toString().equals("МУЖ")) {
-                                this.getTableRow().setStyle("-fx-background-color: #7c71ff");
-                            }
-                            if (item.toString().equals("ЖЕН")) {
-                                this.getTableRow().setStyle("-fx-background-color: #ee8fc1");
-                            }
-                        }
+                    public void updateItem(Object field, boolean empty) {
+                        super.updateItem(field, empty);
+                        colorRowsBySex(field, this);
                     }
                 };
             }
         });
         return column;
+    }
+
+    private void colorRowsBySex(Object field, TableCell<Patient, Object> cell){
+        if (field != null) {
+            cell.setText(field.toString());
+            if (field.toString().equals("МУЖ")) {
+                cell.getTableRow().setStyle("-fx-background-color: #7c71ff");
+            }
+            if (field.toString().equals("ЖЕН")) {
+                cell.getTableRow().setStyle("-fx-background-color: #ee8fc1");
+            }
+        }
     }
 
     private Map<String, String> columnNames() {

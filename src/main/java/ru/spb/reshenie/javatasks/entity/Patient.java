@@ -1,8 +1,6 @@
 package ru.spb.reshenie.javatasks.entity;
 
-import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.Date;
 
 import static ru.spb.reshenie.javatasks.utils.PatientAdapter.*;
 
@@ -11,6 +9,7 @@ public class Patient {
     private String snils;
     private String sex;
     private String fio;
+    private String fioAbbr;
     private String birthDate;
     private String age;
     private String policy;
@@ -19,6 +18,10 @@ public class Patient {
 
     public String getFio() {
         return fio;
+    }
+
+    public String getFioAbbr() {
+        return fioAbbr;
     }
 
     public String getBirthDate() {
@@ -55,6 +58,7 @@ public class Patient {
     public Patient(String fio, LocalDate birthDate, Integer sex,
                    Integer num, String smo, String snils, String policy, Integer finSource) {
         this.fio = fio;
+        this.fioAbbr = getFioAbbrStr(fio);
         this.birthDate = getDateFromSQLFormat(birthDate);
         this.sex = getSexStr(sex);
         this.num = num;

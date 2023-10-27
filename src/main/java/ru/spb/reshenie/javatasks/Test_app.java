@@ -3,11 +3,7 @@ package ru.spb.reshenie.javatasks;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.TableRow;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import ru.spb.reshenie.javatasks.db.AgentDB;
@@ -15,8 +11,6 @@ import ru.spb.reshenie.javatasks.entity.Patient;
 import ru.spb.reshenie.javatasks.ui.TableView_Patient;
 
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
 public class Test_app extends Application {
     @Override

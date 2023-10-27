@@ -7,6 +7,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import ru.spb.reshenie.javatasks.entity.Patient;
 import ru.spb.reshenie.javatasks.utils.CustomCellFactory;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class TableView_Patient extends TableView<Patient> {
@@ -20,10 +21,12 @@ public class TableView_Patient extends TableView<Patient> {
     private List<TableColumn<Patient, Object>> getColumns(ObservableList<Patient> ol)
             throws ClassNotFoundException {
         Map<String, String> columnNames = columnNames();
-        return Arrays.
+        return new ArrayList<>(Arrays.
                 stream(Class.forName(ol.get(0).getClass().getName()).getDeclaredFields())
-                .map(e -> getColumnFromField(e.getName(), columnNames.get(e.getName())))
-                .toList();
+                .map(Field::getName)
+                .filter(fn -> !fn.equals("fio"))
+                .map(fn -> getColumnFromField(fn, columnNames.get(fn)))
+                .toList());
     }
 
     private TableColumn<Patient, Object> getColumnFromField(String prop, String colName) {
@@ -38,7 +41,7 @@ public class TableView_Patient extends TableView<Patient> {
         columnNames.put("num", "Номер");
         columnNames.put("snils", "СНИЛС");
         columnNames.put("sex", "Пол");
-        columnNames.put("fio", "ФИО");
+        columnNames.put("fioAbbr", "ФИО");
         columnNames.put("birthDate", "Дата рожд.");
         columnNames.put("age", "Возраст");
         columnNames.put("policy", "Полис");

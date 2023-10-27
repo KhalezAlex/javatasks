@@ -43,4 +43,17 @@ public class PatientAdapter {
         StringBuilder sb = new StringBuilder(snils);
         return sb.insert(3,"-").insert(7,"-").insert(11, "-").toString();
     }
+
+    public static String getFioAbbrStr(String fio) {
+        StringBuilder result = new StringBuilder("");
+        String[] fioArr = fio.split(" ");
+        result
+                .append(fioArr[0])
+                .append(" ")
+                .append(fioArr[1].charAt(0))
+                .append(". ")
+                .append(fioArr[2].charAt(0))
+                .append(".");
+        return result.toString();
+    }
 }

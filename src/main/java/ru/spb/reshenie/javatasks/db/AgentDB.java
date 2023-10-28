@@ -3,6 +3,7 @@ package ru.spb.reshenie.javatasks.db;
 import ru.spb.reshenie.javatasks.entity.Patient;
 
 import java.sql.*;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.LinkedList;
 
@@ -37,7 +38,7 @@ public class AgentDB {
             Statement statement = this.connection.createStatement();
             ResultSet result = statement.executeQuery(query);
             return getFromResultSet(result);
-        } catch (SQLException e) {
+        } catch (SQLException | ParseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -49,12 +50,12 @@ public class AgentDB {
             Statement statement = this.connection.createStatement();
             ResultSet result = statement.executeQuery(queryToExecute);
             return getFromResultSet(result);
-        } catch (SQLException e) {
+        } catch (SQLException | ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private LinkedList<Patient> getFromResultSet(ResultSet result) throws SQLException {
+    private LinkedList<Patient> getFromResultSet(ResultSet result) throws SQLException, ParseException {
         LinkedList<Patient> patients = new LinkedList<>();
         while (result.next()) {
             patients.add(getFromResult(result));
@@ -62,9 +63,8 @@ public class AgentDB {
         return patients;
     }
 
-    private Patient getFromResult(ResultSet result) throws SQLException {
+    private Patient getFromResult(ResultSet result) throws SQLException{
         return new Patient(
-                Integer.parseInt(result.getString("id")),
                 result.getString("fio"),
                 getDate(result.getString("birth_date")),
                 Integer.parseInt(result.getString("sex")),

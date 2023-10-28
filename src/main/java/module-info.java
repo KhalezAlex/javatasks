@@ -5,5 +5,6 @@ module ru.spb.reshenie.javatasks {
 
 
     opens ru.spb.reshenie.javatasks to javafx.fxml;
+    opens ru.spb.reshenie.javatasks.entity to javafx.base;
     exports ru.spb.reshenie.javatasks;
 }

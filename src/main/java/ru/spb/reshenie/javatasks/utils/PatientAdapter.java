@@ -1,12 +1,7 @@
 package ru.spb.reshenie.javatasks.utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Locale;
 
 public class PatientAdapter {
     public static String getSexStr(int isMan) {
@@ -45,7 +40,7 @@ public class PatientAdapter {
     }
 
     public static String getFioAbbrStr(String fio) {
-        StringBuilder result = new StringBuilder("");
+        StringBuilder result = new StringBuilder();
         String[] fioArr = fio.split(" ");
         result
                 .append(fioArr[0])

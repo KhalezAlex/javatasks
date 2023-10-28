@@ -76,4 +76,4 @@ public class TableView_Patient extends TableView<Patient> {
 //    }
 
 
-// НЕ ТРОГАТЬ
+// НЕ ТРОГАТЬ - потом разобрать

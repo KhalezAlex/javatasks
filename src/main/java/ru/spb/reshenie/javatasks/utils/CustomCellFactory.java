@@ -14,7 +14,6 @@ import ru.spb.reshenie.javatasks.entity.Patient;
 
 import java.util.Objects;
 
-
 public class CustomCellFactory implements Callback<TableColumn<Patient, Object>, TableCell<Patient, Object>> {
     @Override
     public TableCell<Patient, Object> call(TableColumn<Patient, Object> col) {
@@ -24,13 +23,17 @@ public class CustomCellFactory implements Callback<TableColumn<Patient, Object>,
                 super.updateItem(field, empty);
                 this.setStyle("-fx-alignment: center");
                 if (field != null) {
-                    customizePropertyCells(this, field);
+                    setCell(this, field);
                 }
             }
         };
     }
 
-    private void customizePropertyCells(TableCell<Patient, Object> cell, Object field) {
+    private void setCell(TableCell<Patient, Object> cell, Object field) {
+        String str = field.toString();
+        if (!str.equals("1") && !str.equals("2") && !str.equals("3")) {
+            cell.setText(field.toString());
+        }
         colorRowsBySex(cell, field);
         customizeFioCell(cell, field);
         customizeFinSourceCell(cell, field);
@@ -42,38 +45,36 @@ public class CustomCellFactory implements Callback<TableColumn<Patient, Object>,
         if (tmp.length == 3 && !tmp[1].equals("-") &&
                 cell.getTableRow() != null && cell.getTableRow().getItem() != null) {
             cell.setTooltip(new Tooltip(cell.getTableRow().getItem().getFio()));
-            cell.setStyle("-fx-font-weight: 700");
+            cell.setStyle("-fx-font-weight: 700; -fx-alignment: center");
         }
     }
 
     private void customizeFinSourceCell(TableCell<Patient, Object> cell, Object field) {
         if (field.toString().equals("1")) {
-            cell.setTooltip(new Tooltip("ОМС"));
-//            setCellGraphics(cell, "/img/oms.png");
+            setFinSourceCellGraphics(cell, "oms.png", "ОМС");
         }
         if (field.toString().equals("2")) {
-            cell.setTooltip(new Tooltip("ДМС"));
-//            setCellGraphics(cell, "/img/dms.png");
+            setFinSourceCellGraphics(cell, "dms.png", "ДМС");
         }
         if (field.toString().equals("3")) {
-            cell.setTooltip(new Tooltip("Наличный расчет"));
-//            setCellGraphics(cell, "/img/cash.png");
+            setFinSourceCellGraphics(cell, "cash.png", "Наличный расчет");
         }
     }
 
-    private void setCellGraphics(TableCell<Patient, Object> cell, String imgPath) {
+    private void setFinSourceCellGraphics(TableCell<Patient, Object> cell, String img, String tooltip) {
         HBox graphicContainer = new HBox();
         graphicContainer.setAlignment(Pos.CENTER);
-        ImageView iv = new ImageView(new Image(getClass().getResourceAsStream(imgPath)));
+        ImageView iv = new ImageView(new Image(Objects.requireNonNull(getClass()
+                .getResourceAsStream("/img/".concat(img)))));
         iv.setFitHeight(25);
         iv.setPreserveRatio(true);
         graphicContainer.getChildren().add(iv);
+        cell.setTooltip(new Tooltip(tooltip));
         cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(graphicContainer));
     }
 
 
     private void colorRowsBySex(TableCell<Patient, Object> cell, Object field) {
-        cell.setText(field.toString());
         if (cell.getTableRow() != null) {
             if (field.toString().equals("МУЖ")) {
                 cell.getTableRow().setStyle("-fx-background-color: #7c71ff");

@@ -13,7 +13,7 @@ import java.util.*;
 public class TableView_Patient extends TableView<Patient> {
     public TableView_Patient(ObservableList<Patient> ol) throws ClassNotFoundException {
         super(ol);
-        this.setMinSize(700, 700);
+        this.setMinSize(800, 700);
         this.getColumns().addAll(getColumns(ol));
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }

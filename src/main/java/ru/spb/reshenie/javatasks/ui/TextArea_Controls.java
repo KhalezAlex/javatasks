@@ -1,4 +1,4 @@
 package ru.spb.reshenie.javatasks.ui;
 
-public class TeatAppTextArea {
+public class TextArea_Controls {
 }

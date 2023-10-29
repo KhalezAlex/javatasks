@@ -1,4 +1,4 @@
-package ru.spb.reshenie.javatasks;
+package ru.spb.reshenie.javatasks.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

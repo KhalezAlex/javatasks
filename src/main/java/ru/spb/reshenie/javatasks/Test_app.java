@@ -7,7 +7,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ru.spb.reshenie.javatasks.db.AgentDB;
@@ -36,10 +39,11 @@ public class Test_app extends Application {
         stage.show();
 
         setButtonListeners();
+        setTextAreaListeners();
     }
 
     private void setButtonListeners() {
-        ((Button) root.lookupAll("Button").toArray()[0])
+        ((Button) root.lookup("#search_btn"))
                 .setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -47,26 +51,54 @@ public class Test_app extends Application {
                     }
                 });
 
-        ((Button) root.lookupAll("Button").toArray()[1])
+        ((Button) root.lookup("#clear_btn"))
                 .setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        ((TextArea) root.lookup("TextArea")).setText("");
-                        root.getChildren().remove(1);
-                        try {
-                            root.getChildren().add(new TableView_Patient(ol));
-                        } catch (ClassNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
+                        showAllBase();
                     }
                 });
+    }
+
+    private void setTextAreaListeners() {
+        (root.lookup("TextArea")).setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode() == KeyCode.ENTER) {
+                    String temp = ((TextArea) root.lookup("TextArea")).getText();
+                    temp = temp.substring(0, temp.length() - 1);
+                    ((TextArea)root.lookup(("TextArea"))).setText(temp);
+                    executeQuery();
+                }
+                if (keyEvent.getCode() == KeyCode.ESCAPE) {
+                    showAllBase();
+                }
+            }
+        });
+
     }
 
     private void executeQuery() {
         QueryWizard qw = new QueryWizard(((TextArea) (root.lookup("TextArea"))).getText(), ol);
         root.getChildren().remove(1);
         try {
-            root.getChildren().add(new TableView_Patient(qw.collectQuery()));
+            ObservableList<Patient> result = qw.collectQuery();
+            if (result.size() > 0) {
+                root.getChildren().add(new TableView_Patient(result));
+            }
+            else {
+                root.getChildren().add(new Label("По таким критериям пациентов не найдено!"));
+            }
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void showAllBase() {
+        ((TextArea) root.lookup("TextArea")).setText("");
+        root.getChildren().remove(1);
+        try {
+            root.getChildren().add(new TableView_Patient(ol));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

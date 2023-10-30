@@ -20,6 +20,10 @@ public class Patient {
         return fio;
     }
 
+    public String getFioAbbr() {
+        return fioAbbr;
+    }
+
     public String getBirthDate() {
         return birthDate;
     }

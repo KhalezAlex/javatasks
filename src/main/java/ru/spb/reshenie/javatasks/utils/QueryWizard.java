@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class QueryWizard {
     // список значений, по которым будет проводиться поиск
     private List<String> predList;
-    private ObservableList<Patient> patients;
+    private final ObservableList<Patient> patients;
 
     public QueryWizard(String predicate, ObservableList<Patient> patients) {
         this.patients = patients;

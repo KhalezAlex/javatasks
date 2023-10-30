@@ -1,33 +1,35 @@
 package ru.spb.reshenie.javatasks.db;
 
 import ru.spb.reshenie.javatasks.entity.Patient;
+import ru.spb.reshenie.javatasks.utils.ConfigReader;
 
+import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class AgentDB {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/etalon";
-    private static final String DB_DRIVER = "org.postgresql.Driver";
-    private static final String username = "postgres";
-    private static final String password = "ItsMyLife0203";
-    private Connection connection;
+    private final Connection connection;
 
     public AgentDB() {
         try {
-            Class.forName(DB_DRIVER);
-            this.connection = DriverManager.getConnection(DB_URL, username, password);
-        } catch (ClassNotFoundException | SQLException e) {
+            Map<String, String> config = ConfigReader.dbUrl();
+            Class.forName(config.get("DB_DRIVER"));
+            this.connection = DriverManager.getConnection(config.get("DB_URL"),
+                    config.get("username"), config.get("password"));
+        } catch (ClassNotFoundException | SQLException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public AgentDB(String url, String name, String password) {
         try {
-            Class.forName(DB_DRIVER);
+            Map<String, String> config = ConfigReader.dbUrl();
+            Class.forName(config.get("DB_DRIVER"));
             this.connection = DriverManager.getConnection(url, name, password);
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (ClassNotFoundException | SQLException | IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -37,18 +39,6 @@ public class AgentDB {
         try {
             Statement statement = this.connection.createStatement();
             ResultSet result = statement.executeQuery(query);
-            return getFromResultSet(result);
-        } catch (SQLException | ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public LinkedList<Patient> getPersonsByString(String query) {
-        String baseQuery = "SELECT * FROM java_tasks_patient WHERE";
-        String queryToExecute = queryToExecute(baseQuery, "fio", query.split(" "));
-        try {
-            Statement statement = this.connection.createStatement();
-            ResultSet result = statement.executeQuery(queryToExecute);
             return getFromResultSet(result);
         } catch (SQLException | ParseException e) {
             throw new RuntimeException(e);
@@ -80,19 +70,6 @@ public class AgentDB {
         String[] birthDate = date.split("-");
         return LocalDate.of(Integer.parseInt(birthDate[0]),
                 Integer.parseInt(birthDate[1]), Integer.parseInt(birthDate[2]));
-    }
-
-    private String queryToExecute(String query, String field, String[] args) {
-        StringBuilder sb = new StringBuilder(query);
-        for (String arg : args) {
-            sb.append(" OR ")
-                    .append(field)
-                    .append(" LIKE '%")
-                    .append(arg)
-                    .append("%'");
-        }
-        sb.delete(sb.indexOf("OR"), sb.indexOf("OR") + 2);
-        return sb.toString();
     }
 
     public void closeConnection() throws SQLException {

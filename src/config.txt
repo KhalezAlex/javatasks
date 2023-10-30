@@ -1,0 +1,4 @@
+DB_URL jdbc:postgresql://localhost:5432/etalon
+DB_DRIVER org.postgresql.Driver
+username postgres
+password ItsMyLife0203

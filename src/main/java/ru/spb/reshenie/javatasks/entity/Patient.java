@@ -5,15 +5,15 @@ import java.time.LocalDate;
 import static ru.spb.reshenie.javatasks.utils.PatientAdapter.*;
 
 public class Patient {
-    private Integer num;
-    private String snils;
-    private String sex;
-    private String fio;
-    private String fioAbbr;
-    private String birthDate;
-    private String age;
-    private String policy;
-    private Integer finSource;
+    private final Integer num;
+    private final String snils;
+    private final String sex;
+    private final String fio;
+    private final String fioAbbr;
+    private final String birthDate;
+    private final String age;
+    private final String policy;
+    private final Integer finSource;
 
 
     public String getFio() {
@@ -50,9 +50,6 @@ public class Patient {
 
     public String getAge() {
         return age;
-    }
-
-    public Patient() {
     }
 
     public Patient(String fio, LocalDate birthDate, Integer sex,

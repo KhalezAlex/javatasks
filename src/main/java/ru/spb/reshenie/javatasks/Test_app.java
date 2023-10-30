@@ -29,9 +29,8 @@ public class Test_app extends Application {
     @Override
     public void start(Stage stage) throws ClassNotFoundException, SQLException {
         AgentDB agentDB = new AgentDB();
-        LinkedList<Patient> pts = agentDB.getAll();
+        ol = FXCollections.observableArrayList(agentDB.getAll());
         agentDB.closeConnection();
-        ol = FXCollections.observableArrayList(pts);
         TableView_Patient table = new TableView_Patient(ol);
         Pane_Controls controls = new Pane_Controls();
         root = new VBox(controls, table);

@@ -63,10 +63,10 @@ public class Test_app extends Application {
     }
 
     private void executeQuery() {
-        QueryWizard qw = new QueryWizard(((TextArea) (root.lookup("TextArea"))).getText());
+        QueryWizard qw = new QueryWizard(((TextArea) (root.lookup("TextArea"))).getText(), ol);
         root.getChildren().remove(1);
         try {
-            root.getChildren().add(new TableView_Patient(qw.collectQuery(ol)));
+            root.getChildren().add(new TableView_Patient(qw.collectQuery()));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

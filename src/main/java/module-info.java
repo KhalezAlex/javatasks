@@ -9,4 +9,5 @@ module ru.spb.reshenie.javatasks {
     exports ru.spb.reshenie.javatasks;
     exports ru.spb.reshenie.javatasks.controllers;
     opens ru.spb.reshenie.javatasks.controllers to javafx.fxml;
+    opens ru.spb.reshenie.javatasks.ui to javafx.fxml;
 }

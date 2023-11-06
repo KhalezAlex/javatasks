@@ -1,78 +1,55 @@
 package ru.spb.reshenie.javatasks.utils;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import ru.spb.reshenie.javatasks.entity.Patient;
-
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+
+import static ru.spb.reshenie.javatasks.utils.PatientAdapter.getDateSQLFormat;
 
 public class QueryWizard {
     // список значений, по которым будет проводиться поиск
     private List<String> predList;
-    private final ObservableList<Patient> patients;
+    private StringBuilder query = new StringBuilder("SELECT fio, birth_date, sex, num, smo, snils, " +
+            "policy, fin_source FROM java_tasks_patient WHERE ");
 
-    public QueryWizard(String predicate, ObservableList<Patient> patients) {
-        this.patients = patients;
+    public QueryWizard(String predicate) {
         predList = Arrays.asList(predicate.split(" "));
         predList = predList
                 .stream()
                 .filter(p -> p.length() <= 256)
                 .toList();
+        completeQuery();
+        query = new StringBuilder(query.substring(0, query.length() - 4)).append(";");
     }
 
-    public ObservableList<Patient> collectQuery() {
-        ObservableList<Patient> result = FXCollections.observableArrayList();
-        result.addAll(numSearchResults());
-        result.addAll(snilsSearchResults());
-        result.addAll(sexSearchResults());
-        result.addAll(fioSearchResults());
-        result.addAll(dateOfBirthSearchResults());
-        result.addAll(ageSearchResults());
-        result.addAll(policySearchList());
-        result.addAll(finSourceSearchList());
-        return result;
+
+    // методы для сбора строки поиска
+    private void completeQuery() {
+        putNumSearchList();
+        putSnilsSearchList();
+        putSexSearchList();
+        putFioSearchList();
+        putPolicySearchList();
+        putBirthDateSearchList();
+        putAgeSearchList();
+        putFinSourceSearchList();
     }
 
-    private ObservableList<Patient> numSearchResults() {
-        ObservableList<Patient> result = FXCollections.observableArrayList();
-        // Фильтруем в список result через все значения из списка на поиск
-        getNumSearchList()
-                .forEach(p ->
-                        result.addAll(patients
-                                .stream()
-                                .filter(patient ->
-                                        patient.getNum().toString().contains(p))
-                                .toList()));
-        return result;
-    }
-
-    private List<String> getNumSearchList() {
-        return predList
+    private void putNumSearchList() {
+        predList
                 .stream()
                 .filter(num ->
                         Pattern
                                 .compile("^\\d{1,6}")
                                 .matcher(num)
                                 .matches())
-                .collect(Collectors.toList());
+                .distinct()
+                .toList()
+                .forEach(num ->
+                        addIntPartCondition("num", num, 6));
     }
 
-    private ObservableList<Patient> snilsSearchResults() {
-        ObservableList<Patient> result = FXCollections.observableArrayList();
-        getSnilsSearchList()
-                .forEach(p ->
-                        result.addAll(patients
-                                .stream()
-                                .filter(patient ->
-                                        patient.getSnils().contains(p))
-                                .toList()));
-        return result;
-    }
-
-    private List<String> getSnilsSearchList() {
-        return predList
+    private void putSnilsSearchList() {
+        predList
                 .stream()
                 .filter(snils ->
                         Pattern.compile("^\\d{1,11}")
@@ -80,153 +57,161 @@ public class QueryWizard {
                                         .reduce(String::concat)
                                         .get())
                                 .matches())
-                .collect(Collectors.toList());
+                .distinct()
+                .toList()
+                .forEach(snils ->
+                        addIntPartCondition("snils", snils.replaceAll("-", ""), 11));
     }
 
-    private ObservableList<Patient> sexSearchResults() {
-        ObservableList<Patient> result = FXCollections.observableArrayList();
-        getSexSearchList()
-                .forEach(p ->
-                        result.addAll(patients
-                                .stream()
-                                .filter(patient ->
-                                        patient.getSex().toLowerCase().contains(p.toLowerCase()))
-                                .toList()));
-        return result;
-    }
-
-    private List<String> getSexSearchList() {
-        return predList
+    private void putSexSearchList() {
+        predList
                 .stream()
                 .filter(sex ->
-                        Pattern.compile("^[е-уЕ-У]{1,3}")
-                                .matcher(sex)
-                                .matches())
-                .collect(Collectors.toList());
+                        "муж".toLowerCase().contains(sex.toLowerCase())
+                                || "жен".toLowerCase().contains(sex.toLowerCase()))
+                .map(sex -> {
+                    if ("муж".contains(sex.toLowerCase())) return "муж";
+                    else return "жен";
+                })
+                .distinct()
+                .toList()
+                .forEach(sex ->
+                        addIntCondition("sex", sex.equals("муж") ? 1 : 2));
     }
 
-    private ObservableList<Patient> fioSearchResults() {
-        ObservableList<Patient> result = FXCollections.observableArrayList();
-        getFioSearchList()
-                .forEach(p ->
-                        result.addAll(patients
-                                .stream()
-                                .filter(patient ->
-                                        patient.getFio().toLowerCase().contains(p.toLowerCase()))
-                                .toList()));
-        return result;
-    }
-
-    private List<String> getFioSearchList() {
-        return predList
+    private void putFioSearchList() {
+        predList
                 .stream()
                 .filter(fio ->
                         Pattern.compile("^[а-яА-Я]{1,20}")
                                 .matcher(fio)
                                 .matches())
-                .toList();
+                .distinct()
+                .toList()
+                .forEach(fio ->
+                        addStringCondition("fio", fio));
     }
 
-    private ObservableList<Patient> dateOfBirthSearchResults() {
-        ObservableList<Patient> result = FXCollections.observableArrayList();
-        predList
-                .forEach(p ->
-                        result.addAll(patients
-                                .stream()
-                                .filter(patient ->
-                                        patient.getBirthDate().contains(p))
-                                .toList()));
-        return result;
-    }
-
-    private List<String> getDateOfBirthSearchList() {
-        return predList
+    private void putBirthDateSearchList() {
+        List<String> temp = new ArrayList<>(predList
                 .stream()
                 .filter(dob ->
-                        Pattern.compile("d{2,4}")
+                        Pattern.compile("\\d{2,4}")
                                 .matcher(dob)
                                 .matches())
-                .toList();
+                .toList());
+        temp.addAll(predList
+                .stream()
+                .filter(dob -> //дописать нормальный регэксп
+                        Pattern.compile("\\d{2}\\.\\d{2}\\.\\d{4}")
+                                .matcher(dob)
+                                .matches())
+                .toList());
+        temp.forEach(this::addDateCondition);
     }
 
-    private ObservableList<Patient> ageSearchResults() {
-        ObservableList<Patient> result = FXCollections.observableArrayList();
-        getAgeSearchList()
-                .forEach(p ->
-                        result.addAll(patients
-                                .stream()
-                                .filter(patient ->
-                                        patient.getAge().contains(p))
-                                .toList()));
-        return result;
-    }
-
-    private List<String> getAgeSearchList() {
-        return predList
+    private void putAgeSearchList() {
+        predList
                 .stream()
                 .filter(age ->
                         Pattern.compile("^\\d{1,2}")
                                 .matcher(age)
                                 .matches())
-                .toList();
+                .distinct()
+                .toList()
+                .forEach(this::addAgeCondition);
     }
 
-    private ObservableList<Patient> policySearchList() {
-        ObservableList<Patient> result = FXCollections.observableArrayList();
-        getPolicySearchList()
-                .forEach(p ->
-                        result.addAll(patients
-                                .stream()
-                                .filter( patient ->
-                                        patient.getPolicy().toLowerCase().contains(p.toLowerCase()))
-                                .toList()));
-        return result;
-    }
-
-    private List<String> getPolicySearchList() {
-        List<String> temp = new ArrayList<>(predList
+    private void putPolicySearchList() {
+        // добавить выборку по компании
+        predList
                 .stream()
                 .filter(p ->
                         Pattern.compile("^[а-яА-Я]{1,200}")
                                 .matcher(p)
                                 .matches())
-                .toList());
-        temp.addAll(predList
+                .distinct()
+                .toList()
+                .forEach(smo ->
+                        addStringCondition("smo", smo));
+        // добавить выборку по номеру полиса
+        predList
                 .stream()
                 .filter(p ->
                         Pattern.compile("^\\d{1,20}")
                                 .matcher(p)
                                 .matches())
-                .toList());
-        return temp;
+                .distinct()
+                .toList()
+                .forEach(policy ->
+                        addIntPartCondition("policy", policy, 20));
     }
 
-    private ObservableList<Patient> finSourceSearchList() {
-        ObservableList<Patient> result = FXCollections.observableArrayList();
-        Map<Integer, String> finSources = new HashMap<>();
-        finSources.put(1, "ОМС");
-        finSources.put(2, "ДМС");
-        finSources.put(3, "Наличный расчет");
-        getFinSourceSearchList()
-                        .forEach(p ->
-                                result.addAll(patients
-                                        .stream()
-                                        .filter(patient ->
-                                                finSources
-                                                        .get(patient.getFinSource())
-                                                        .toLowerCase()
-                                                        .contains(p.toLowerCase()))
-                                        .toList()));
-        return result;
-    }
-
-    private List<String> getFinSourceSearchList() {
-        return predList
+    private void putFinSourceSearchList() {
+        predList
                 .stream()
-                .filter(fs ->
-                        Pattern.compile("^[а-яА-Я]{1,8}")
-                                .matcher(fs)
-                                .matches())
-                .toList();
+                .filter(fs -> "омс".contains(fs.toLowerCase())
+                        || "дмс".contains(fs.toLowerCase())
+                        || "наличный расчет".contains(fs.toLowerCase()))
+                .distinct()
+                .map(fs -> {
+                    if ("омс".contains(fs.toLowerCase())) return 1;
+                    else if ("дмс".contains(fs.toLowerCase())) return 2;
+                    else return 3;
+                })
+                .toList()
+                .forEach(fs ->
+                        addIntCondition("fin_source", fs));
+
+    }
+
+    // сбор параметров запроса в конечный запрос
+    private void addIntPartCondition(String column, String number, int charLength) {
+        query
+                .append("CAST(")
+                .append(column)
+                .append(" AS varchar(")
+                .append(charLength)
+                .append(")) LIKE '%")
+                .append(number)
+                .append("%%' OR ");
+    }
+
+    private void addIntCondition(String column, int pred) {
+        query
+                .append(column)
+                .append(" = ")
+                .append(pred)
+                .append(" OR ");
+    }
+
+    private void addStringCondition(String column, String pred) {
+        query
+                .append("LOWER(")
+                .append(column)
+                .append(") LIKE LOWER('%")
+                .append(pred)
+                .append("%%') OR ");
+    }
+
+    private void addAgeCondition(String pred) {
+        query
+                .append("(EXTRACT('year' FROM CURRENT_DATE::timestamp) - EXTRACT('year' FROM birth_date::timestamp)) = ")
+                .append(pred)
+                .append(" OR ");
+    }
+
+    private void addDateCondition(String date) {
+        if (date.length() == 10) {
+            date = getDateSQLFormat(date);
+        }
+        query
+                .append("CAST(birth_date AS varchar(10)) LIKE '%")
+                .append(date)
+                .append("%%' OR ");
+    }
+
+    public String getQuery() {
+        return query.toString();
     }
 }

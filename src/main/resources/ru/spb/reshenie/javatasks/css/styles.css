@@ -1,0 +1,15 @@
+.row-woman {
+    -fx-background-color: #ee8fc1;
+}
+
+.row-man {
+    -fx-background-color: #7c71ff;
+}
+
+.cell {
+    -fx-alignment: center;
+}
+
+.cell-fio {
+    -fx-font-weight: 700;
+}

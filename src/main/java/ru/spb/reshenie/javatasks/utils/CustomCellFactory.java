@@ -21,7 +21,7 @@ public class CustomCellFactory implements Callback<TableColumn<Patient, Object>,
             @Override
             public void updateItem(Object field, boolean empty) {
                 super.updateItem(field, empty);
-                this.setStyle("-fx-alignment: center");
+                this.getStyleClass().add("cell");
                 if (field != null) {
                     setCell(this, field);
                 }
@@ -45,7 +45,7 @@ public class CustomCellFactory implements Callback<TableColumn<Patient, Object>,
         if (tmp.length == 3 && !tmp[1].equals("-") &&
                 cell.getTableRow() != null && cell.getTableRow().getItem() != null) {
             cell.setTooltip(new Tooltip(cell.getTableRow().getItem().getFio()));
-            cell.setStyle("-fx-font-weight: 700; -fx-alignment: center");
+            cell.getStyleClass().add("cell-fio");
         }
     }
 
@@ -77,10 +77,10 @@ public class CustomCellFactory implements Callback<TableColumn<Patient, Object>,
     private void colorRowsBySex(TableCell<Patient, Object> cell, Object field) {
         if (cell.getTableRow() != null) {
             if (field.toString().equals("МУЖ")) {
-                cell.getTableRow().setStyle("-fx-background-color: #7c71ff");
+                cell.getTableRow().getStyleClass().add("row-man");
             }
             if (field.toString().equals("ЖЕН")) {
-                cell.getTableRow().setStyle("-fx-background-color: #ee8fc1");
+                cell.getTableRow().getStyleClass().add("row-woman");
             }
         }
     }

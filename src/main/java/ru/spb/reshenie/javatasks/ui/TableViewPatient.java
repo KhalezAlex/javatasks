@@ -1,17 +1,29 @@
 package ru.spb.reshenie.javatasks.ui;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import ru.spb.reshenie.javatasks.db.DAO;
+import ru.spb.reshenie.javatasks.db.DbDao;
 import ru.spb.reshenie.javatasks.entity.Patient;
 import ru.spb.reshenie.javatasks.utils.CustomCellFactory;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class TableView_Patient extends TableView<Patient> {
-    public TableView_Patient(ObservableList<Patient> ol) throws ClassNotFoundException {
+public class TableViewPatient extends TableView<Patient> {
+    public TableViewPatient() throws ClassNotFoundException {
+        super();
+        this.setMinSize(800, 700);
+        ObservableList<Patient> ol = getOl();
+        this.getColumns().addAll(getColumns(ol));
+        this.setItems(getOl());
+        this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    }
+
+    public TableViewPatient(ObservableList<Patient> ol) throws ClassNotFoundException {
         super(ol);
         this.setMinSize(800, 700);
         this.getColumns().addAll(getColumns(ol));
@@ -47,6 +59,13 @@ public class TableView_Patient extends TableView<Patient> {
         columnNames.put("policy", "Полис");
         columnNames.put("finSource", "Ист.Фин.");
         return columnNames;
+    }
+
+    private ObservableList<Patient> getOl() {
+        DAO dao = new DbDao();
+        ObservableList<Patient> temp = FXCollections.observableArrayList(dao.getAll());
+        dao.closeConnection();
+        return temp;
     }
 }
 

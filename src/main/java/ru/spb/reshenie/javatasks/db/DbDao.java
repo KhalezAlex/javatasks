@@ -5,26 +5,24 @@ import ru.spb.reshenie.javatasks.utils.ConfigReader;
 
 import java.io.IOException;
 import java.sql.*;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class AgentDB {
+public class DbDao implements DAO{
     private final Connection connection;
-
-    public AgentDB() {
+    //  СДЕЛАТЬ НОРМАЛЬНЫЙ КОНФИГ
+    public DbDao() {
         try {
             Map<String, String> config = ConfigReader.dbUrl();
-            Class.forName(config.get("DB_DRIVER"));
             this.connection = DriverManager.getConnection(config.get("DB_URL"),
                     config.get("username"), config.get("password"));
-        } catch (ClassNotFoundException | SQLException | IOException e) {
+        } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public AgentDB(String url, String name, String password) {
+    public DbDao(String url, String name, String password) {
         try {
             Map<String, String> config = ConfigReader.dbUrl();
             Class.forName(config.get("DB_DRIVER"));
@@ -34,36 +32,53 @@ public class AgentDB {
         }
     }
 
+    @Override
     public LinkedList<Patient> getAll() {
         String query = "SELECT * FROM java_tasks_patient";
         try {
             Statement statement = this.connection.createStatement();
             ResultSet result = statement.executeQuery(query);
             return getFromResultSet(result);
-        } catch (SQLException | ParseException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private LinkedList<Patient> getFromResultSet(ResultSet result) throws SQLException, ParseException {
+    @Override
+    public LinkedList<Patient> getByQuery(String query) {
+        try {
+            Statement statement = this.connection.createStatement();
+            ResultSet result = statement.executeQuery(query);
+            return getFromResultSet(result);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private LinkedList<Patient> getFromResultSet(ResultSet result) throws SQLException {
         LinkedList<Patient> patients = new LinkedList<>();
         while (result.next()) {
             patients.add(getFromResult(result));
         }
+        result.close();
         return patients;
     }
 
-    private Patient getFromResult(ResultSet result) throws SQLException{
-        return new Patient(
-                result.getString("fio"),
-                getDate(result.getString("birth_date")),
-                Integer.parseInt(result.getString("sex")),
-                Integer.parseInt(result.getString("num")),
-                result.getString("smo"),
-                result.getString("snils"),
-                result.getString("policy"),
-                Integer.parseInt(result.getString("fin_source")
-        ));
+    private Patient getFromResult(ResultSet result) {
+        try {
+            return new Patient(
+                    result.getString("fio"),
+                    getDate(result.getString("birth_date")),
+                    Integer.parseInt(result.getString("sex")),
+                    Integer.parseInt(result.getString("num")),
+                    result.getString("smo"),
+                    result.getString("snils"),
+                    result.getString("policy"),
+                    Integer.parseInt(result.getString("fin_source")
+                    ));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public LocalDate getDate(String date) {
@@ -72,7 +87,12 @@ public class AgentDB {
                 Integer.parseInt(birthDate[1]), Integer.parseInt(birthDate[2]));
     }
 
-    public void closeConnection() throws SQLException {
-        this.connection.close();
+    @Override
+    public void closeConnection() {
+        try {
+            this.connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

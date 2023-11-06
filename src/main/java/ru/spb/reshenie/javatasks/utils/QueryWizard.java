@@ -1,5 +1,6 @@
 package ru.spb.reshenie.javatasks.utils;
 
+import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -15,7 +16,9 @@ public class QueryWizard {
         predList = Arrays.asList(predicate.split(" "));
         predList = predList
                 .stream()
-                .filter(p -> p.length() <= 256)
+                .distinct()
+                .filter(p ->
+                        p.length() <= 256 && !p.equals(" ") && !p.equals(""))
                 .toList();
         completeQuery();
         query = new StringBuilder(query.substring(0, query.length() - 4)).append(";");

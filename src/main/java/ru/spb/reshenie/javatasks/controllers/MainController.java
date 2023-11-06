@@ -28,14 +28,16 @@ public class MainController {
     public void buttonSearchClickHandler() {
         if (textAreaQuery.getText().equals(""))
             return;
-        ObservableList<Patient> selection = getSelection(textAreaQuery.getText());
+        ObservableList<Patient> selection = getSelection(textAreaQuery.getText()
+                .replaceAll("\n", " ")
+                .replaceAll("\t", " "));
         updateTable(selection);
     }
 
     private ObservableList<Patient> getSelection(String queryStr) {
         QueryWizard qw = new QueryWizard(queryStr);
         DAO dao = new DbDao();
-        ObservableList<Patient> temp = FXCollections.observableArrayList(dao.getByQuery(qw.getQuery()));
+        ObservableList<Patient> temp = dao.getByQuery(qw.getQuery());
         dao.closeConnection();
         return temp;
     }
@@ -51,7 +53,7 @@ public class MainController {
 
     public void buttonCancelClickHandler() {
         DAO dao = new DbDao();
-        updateTable(FXCollections.observableArrayList(dao.getAll()));
+        updateTable(dao.getAll());
         dao.closeConnection();
         textAreaQuery.setText("");
     }
@@ -66,8 +68,9 @@ public class MainController {
     }
 
     private void onTextAreaEnterPressedHandler() {
-        String temp = textAreaQuery.getText();
-        temp = temp.replace("\n", " ").replace("\t", " ");
+        String temp = textAreaQuery.getText()
+                .replaceAll("\n", " ")
+                .replaceAll("\t", " ");
         textAreaQuery.setText(temp);
         buttonSearchClickHandler();
     }

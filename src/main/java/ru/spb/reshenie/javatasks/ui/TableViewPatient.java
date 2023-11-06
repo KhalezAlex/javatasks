@@ -63,7 +63,7 @@ public class TableViewPatient extends TableView<Patient> {
 
     private ObservableList<Patient> getOl() {
         DAO dao = new DbDao();
-        ObservableList<Patient> temp = FXCollections.observableArrayList(dao.getAll());
+        ObservableList<Patient> temp = dao.getAll();
         dao.closeConnection();
         return temp;
     }

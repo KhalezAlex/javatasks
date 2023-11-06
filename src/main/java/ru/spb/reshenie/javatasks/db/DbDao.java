@@ -1,5 +1,7 @@
 package ru.spb.reshenie.javatasks.db;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import ru.spb.reshenie.javatasks.entity.Patient;
 import ru.spb.reshenie.javatasks.utils.ConfigReader;
 
@@ -33,23 +35,24 @@ public class DbDao implements DAO{
     }
 
     @Override
-    public LinkedList<Patient> getAll() {
+    public ObservableList<Patient> getAll() {
         String query = "SELECT * FROM java_tasks_patient";
-        try {
-            Statement statement = this.connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
-            return getFromResultSet(result);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return getByQuery(query);
+//        try {
+//            Statement statement = this.connection.createStatement();
+//            ResultSet result = statement.executeQuery(query);
+//            return FXCollections.observableArrayList(getFromResultSet(result));
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     @Override
-    public LinkedList<Patient> getByQuery(String query) {
+    public ObservableList<Patient> getByQuery(String query) {
         try {
             Statement statement = this.connection.createStatement();
             ResultSet result = statement.executeQuery(query);
-            return getFromResultSet(result);
+            return FXCollections.observableArrayList(getFromResultSet(result));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

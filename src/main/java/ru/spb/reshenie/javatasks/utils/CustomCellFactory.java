@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -77,11 +78,19 @@ public class CustomCellFactory implements Callback<TableColumn<Patient, Object>,
     private void colorRowsBySex(TableCell<Patient, Object> cell, Object field) {
         if (cell.getTableRow() != null) {
             if (field.toString().equals("МУЖ")) {
-                cell.getTableRow().getStyleClass().add("row-man");
+                setStyleClass(cell.getTableRow(), "row-man");
+//                cell.getTableRow().getStyleClass().add("row-man");
             }
             if (field.toString().equals("ЖЕН")) {
-                cell.getTableRow().getStyleClass().add("row-woman");
+                setStyleClass(cell.getTableRow(), "row-woman");
+//                cell.getTableRow().getStyleClass().add("row-woman");
             }
         }
+    }
+
+    private void setStyleClass(TableRow<Patient> row, String styleClass) {
+        row.getStyleClass().remove("row-man");
+        row.getStyleClass().remove("row-woman");
+        row.getStyleClass().add(styleClass);
     }
 }

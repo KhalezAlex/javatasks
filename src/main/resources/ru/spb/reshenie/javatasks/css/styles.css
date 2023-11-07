@@ -13,3 +13,12 @@
 .cell-fio {
     -fx-font-weight: 700;
 }
+
+.centeredContent {
+    -fx-alignment: center;
+}
+
+.textArea {
+    -fx-min-width: 300px;
+    -fx-max-height: 20px;
+}

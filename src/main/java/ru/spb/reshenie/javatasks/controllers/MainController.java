@@ -1,6 +1,5 @@
 package ru.spb.reshenie.javatasks.controllers;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,7 +7,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import ru.spb.reshenie.javatasks.db.DAO;
+import ru.spb.reshenie.javatasks.interfaces.DAO;
 import ru.spb.reshenie.javatasks.db.DbDao;
 import ru.spb.reshenie.javatasks.entity.Patient;
 import ru.spb.reshenie.javatasks.ui.PaneTable;

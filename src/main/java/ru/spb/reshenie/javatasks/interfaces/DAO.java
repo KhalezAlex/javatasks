@@ -1,4 +1,4 @@
-package ru.spb.reshenie.javatasks.db;
+package ru.spb.reshenie.javatasks.interfaces;
 
 import javafx.collections.ObservableList;
 import ru.spb.reshenie.javatasks.entity.Patient;

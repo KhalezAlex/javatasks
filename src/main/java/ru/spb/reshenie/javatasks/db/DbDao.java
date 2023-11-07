@@ -3,6 +3,7 @@ package ru.spb.reshenie.javatasks.db;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.spb.reshenie.javatasks.entity.Patient;
+import ru.spb.reshenie.javatasks.interfaces.DAO;
 import ru.spb.reshenie.javatasks.utils.ConfigReader;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class DbDao implements DAO{
+public class DbDao implements DAO {
     private final Connection connection;
     //  СДЕЛАТЬ НОРМАЛЬНЫЙ КОНФИГ
     public DbDao() {
@@ -26,10 +27,9 @@ public class DbDao implements DAO{
 
     public DbDao(String url, String name, String password) {
         try {
-            Map<String, String> config = ConfigReader.dbUrl();
-            Class.forName(config.get("DB_DRIVER"));
+            Class.forName("org.postgresql.Driver");
             this.connection = DriverManager.getConnection(url, name, password);
-        } catch (ClassNotFoundException | SQLException | IOException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -38,13 +38,6 @@ public class DbDao implements DAO{
     public ObservableList<Patient> getAll() {
         String query = "SELECT * FROM java_tasks_patient";
         return getByQuery(query);
-//        try {
-//            Statement statement = this.connection.createStatement();
-//            ResultSet result = statement.executeQuery(query);
-//            return FXCollections.observableArrayList(getFromResultSet(result));
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
     @Override

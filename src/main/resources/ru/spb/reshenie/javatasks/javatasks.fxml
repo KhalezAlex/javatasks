@@ -10,10 +10,13 @@
 <VBox prefHeight="800" prefWidth="810" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       stylesheets="@css/styles.css"
       fx:controller="ru.spb.reshenie.javatasks.controllers.MainController">
-    <HBox prefHeight="63.0" prefWidth="568.0">
-        <TextArea fx:id="textAreaQuery" prefHeight="30.0" prefWidth="180.0" onKeyPressed="#textAreaQueryKeyPressedHandler"/>
-        <Button fx:id="buttonSearch" mnemonicParsing="false" text="Поиск" onAction="#buttonSearchClickHandler"/>
-        <Button fx:id="buttonCancel" mnemonicParsing="false" text="Отмена" onAction="#buttonCancelClickHandler"/>
+    <HBox styleClass="centeredContent" prefHeight="63.0" prefWidth="568.0">
+        <TextArea styleClass="textArea" fx:id="textAreaQuery" prefHeight="30.0" prefWidth="180.0"
+                  onKeyPressed="#textAreaQueryKeyPressedHandler"/>
+        <VBox styleClass="centeredContent">
+            <Button fx:id="buttonSearch" mnemonicParsing="false" text="Поиск" onAction="#buttonSearchClickHandler"/>
+            <Button fx:id="buttonCancel" mnemonicParsing="false" text="Отмена" onAction="#buttonCancelClickHandler"/>
+        </VBox>
     </HBox>
     <PaneTable fx:id="paneTable"/>
 </VBox>

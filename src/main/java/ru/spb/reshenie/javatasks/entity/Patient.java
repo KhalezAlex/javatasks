@@ -10,7 +10,7 @@ public class Patient {
     private final String sex;
     private final String fio;
     private final String fioAbbr;
-    private final String birthDate;
+    private final LocalDate birthDate;
     private final String age;
     private final String policy;
     private final Integer finSource;
@@ -24,7 +24,7 @@ public class Patient {
         return fioAbbr;
     }
 
-    public String getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
@@ -56,7 +56,7 @@ public class Patient {
                    Integer num, String smo, String snils, String policy, Integer finSource) {
         this.fio = fio;
         this.fioAbbr = getFioAbbrStr(fio);
-        this.birthDate = getDateFromSQLFormat(birthDate);
+        this.birthDate = birthDate;
         this.sex = getSexStr(sex);
         this.num = num;
         this.snils = getSnilsStr(snils);

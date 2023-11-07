@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -21,7 +22,7 @@ public class CustomCellFactory implements Callback<TableColumn<Patient, Object>,
             @Override
             public void updateItem(Object field, boolean empty) {
                 super.updateItem(field, empty);
-                this.setStyle("-fx-alignment: center");
+                this.getStyleClass().add("cell");
                 if (field != null) {
                     setCell(this, field);
                 }
@@ -45,7 +46,7 @@ public class CustomCellFactory implements Callback<TableColumn<Patient, Object>,
         if (tmp.length == 3 && !tmp[1].equals("-") &&
                 cell.getTableRow() != null && cell.getTableRow().getItem() != null) {
             cell.setTooltip(new Tooltip(cell.getTableRow().getItem().getFio()));
-            cell.setStyle("-fx-font-weight: 700; -fx-alignment: center");
+            cell.getStyleClass().add("cell-fio");
         }
     }
 
@@ -77,11 +78,19 @@ public class CustomCellFactory implements Callback<TableColumn<Patient, Object>,
     private void colorRowsBySex(TableCell<Patient, Object> cell, Object field) {
         if (cell.getTableRow() != null) {
             if (field.toString().equals("МУЖ")) {
-                cell.getTableRow().setStyle("-fx-background-color: #7c71ff");
+                setStyleClass(cell.getTableRow(), "row-man");
+//                cell.getTableRow().getStyleClass().add("row-man");
             }
             if (field.toString().equals("ЖЕН")) {
-                cell.getTableRow().setStyle("-fx-background-color: #ee8fc1");
+                setStyleClass(cell.getTableRow(), "row-woman");
+//                cell.getTableRow().getStyleClass().add("row-woman");
             }
         }
+    }
+
+    private void setStyleClass(TableRow<Patient> row, String styleClass) {
+        row.getStyleClass().remove("row-man");
+        row.getStyleClass().remove("row-woman");
+        row.getStyleClass().add(styleClass);
     }
 }

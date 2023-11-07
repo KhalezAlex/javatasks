@@ -4,25 +4,28 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import ru.spb.reshenie.javatasks.interfaces.DAO;
+import ru.spb.reshenie.javatasks.db.DbDao;
 import ru.spb.reshenie.javatasks.entity.Patient;
 import ru.spb.reshenie.javatasks.utils.CustomCellFactory;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class TableView_Patient extends TableView<Patient> {
-    public TableView_Patient(ObservableList<Patient> ol) throws ClassNotFoundException {
-        super(ol);
+public class TableViewPatient extends TableView<Patient> {
+    public TableViewPatient(String className) throws ClassNotFoundException {
+        super();
         this.setMinSize(800, 700);
-        this.getColumns().addAll(getColumns(ol));
+        this.getColumns().addAll(getColumnNames(className));
+        this.setItems(getOl());
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
-    private List<TableColumn<Patient, Object>> getColumns(ObservableList<Patient> ol)
+    private List<TableColumn<Patient, Object>> getColumnNames(String className)
             throws ClassNotFoundException {
         Map<String, String> columnNames = columnNames();
         return new ArrayList<>(Arrays.
-                stream(Class.forName(ol.get(0).getClass().getName()).getDeclaredFields())
+                stream(Class.forName(className).getDeclaredFields())
                 .map(Field::getName)
                 .filter(fn -> !fn.equals("fio"))
                 .map(fn -> getColumnFromField(fn, columnNames.get(fn)))
@@ -47,6 +50,13 @@ public class TableView_Patient extends TableView<Patient> {
         columnNames.put("policy", "Полис");
         columnNames.put("finSource", "Ист.Фин.");
         return columnNames;
+    }
+
+    private ObservableList<Patient> getOl() {
+        DAO dao = new DbDao();
+        ObservableList<Patient> temp = dao.getAll();
+        dao.closeConnection();
+        return temp;
     }
 }
 

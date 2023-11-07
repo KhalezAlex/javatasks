@@ -29,9 +29,17 @@ public class PatientAdapter {
         return "";
     }
 
-    public static String getDateFromSQLFormat(LocalDate date) {
+    public static String getDateStringFromSQLFormat(LocalDate date) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return dtf.format(date);
+    }
+
+    public static String getDateSQLFormat(String date) {
+        String[] dateArr = date.split("\\.");
+        LocalDate bd = LocalDate.of(Integer.parseInt(dateArr[2]),
+                Integer.parseInt(dateArr[1]), Integer.parseInt(dateArr[0]));
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return dtf.format(bd);
     }
 
     public static String getSnilsStr(String snils) {
